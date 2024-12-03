@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChowTimeTable</title>
+<script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore-compat.js"></script>
+
+</head> <link rel="stylesheet" href="./styles/chow.css">
+<body> <div class="veg-1">
+ <img src="./img/veg1.png" alt="">
+</div><div class="contents">
+  
+  <h1>Chowtime</h1>
+  <h3>Your chow is here</h3>
+ 
+  <label for="day">Select a day:</label>
+  <select id="day">
+    <option value="Monday">Monday</option>
+    <option value="Tuesday">Tuesday</option>
+    <option value="Wednesday">Wednesday</option>
+    <option value="Thursday">Thursday</option>
+    <option value="Friday">Friday</option>
+    <option value="Saturday">Saturday</option>
+    <option value="Sunday">Sunday</option>
+  </select>
+  <br><p></p>
+  
+  <label for="meal">Select a meal:</label>
+  <select id="meal">
+    <option value="breakfast">Breakfast</option>
+    <option value="snack">Snack</option>
+    <option value="lunch">Lunch</option>
+    <option value="dinner">Dinner</option>
+  </select>
+  <br><p></p>
+  <button id="sendMeal">Get Meal</button>
+  <button id="sendShoppingList">Shopping List</button>
+ <div> <p id="result"></p>
+  <p id="shoppinglistresult"></p>
+
+ <div id="shop-items">
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox1">Milk</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox2">Eggs</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox3">Oats</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox4">Apples</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox5">Tomatoes</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox6">Pepper</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox7">Turkey</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox8">Catfish</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox9">Goat meat</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox0">Plantain</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox01">Groundnut</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox02">Banana</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox03">Dates</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox04">Lettuce</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox004">Spagetti</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox05">Fish</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox06">Greek yoghurt</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox07">Sliced bread</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox08">Vegetables</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox09">Onions</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox10">Flour</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox11">Dry fish</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox12">Bread</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox13">Yam</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox14">Chicken</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox15">Okra</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox16">Croaker fish</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox17">Avocado</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox18">Pancake mix</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox19">Zobo</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox20">Almond milk</label><br>
+    <label><input type="checkbox" class="myCheckbox"  data-checkbox-id="checkbox21">Bonvita cocoa drink</label><br>
+   <div class="todos"><label><input type="text" id="input-field" placeholder="Add custom item"></label>
+    <button id="addtodo">+</button></div>
+
+    <div id="todocontainer"></div>
+   
+   
+
+  </div>
+
+</div></div>
+  
+<script type="module">
+      import {getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+
+
+  window.onload = function (){
+
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAId9QHxi3kFtbEJ9ZhUyHfumthNKb1CHc",
+    authDomain: "chowback-7448d.firebaseapp.com",
+    projectId: "chowback-7448d",
+    storageBucket: "chowback-7448d.appspot.com",
+    messagingSenderId: "307580964473",
+    appId: "1:307580964473:web:ce88a9b5efb456136ccea8",
+    measurementId: "G-7BTHLM1G8J"
+  };
+
+  const app = firebase.default.initializeApp(firebaseConfig);
+  const db = firebase.default.firestore();
+  
+  const timetable = {
+    "Monday": {
+      "breakfast": "Oat served with milk and scrambled eggs",
+      "snack": "An Apple",
+      "lunch": "White rice with turkey stew",
+      "dinner": "Catfish pepper soup",
+    },
+    "Tuesday": {
+      "breakfast": "Indomie cooked with fresh pepper and boiled eggs",
+      "snack": "Crackers",
+      "lunch": "beans with plantain and goat meat",
+      "dinner": "Garri with groundnut",
+      
+    },
+    "Wednesday": {
+      "breakfast": "Acha pudding with milk and scrambled eggs",
+      "snack": "Smoothie banana, apple, dates and lettuce",
+      "lunch": "Spagetti cooked with palm oil and grilled fish",
+      "dinner": "Greek yoghurt and fruits",
+      
+    },
+    "Thursday": {
+        "breakfast": "Toasted slice bread with sunny side up and jasmine tea",
+        "snack": "An Apple",
+        "lunch": "Eba with vegetable soup and goat meat",
+        "dinner": "Pancake",
+       
+      },
+      "Friday": {
+        "breakfast": "beans cooked with dry fish and bread",
+        "snack": "Crackers",
+        "lunch": "Yam porridge with acha and vegetable",
+        "dinner": "Grilled fish",
+       
+      },
+      "Saturday": {
+        "breakfast": "Boiled yam with egg sauce",
+        "snack": "pineapple",
+        "lunch": "Amala with okra soup and chicken",
+        "dinner": "Greek yoghurt and fruits",
+       
+      },
+      "Sunday": {
+        "breakfast": "Roasted plantain with grilled croaker fish",
+        "snack": "Smoothie banana, apple and avocado",
+        "lunch": "EAT OUT.",
+        "dinner": "Pancake",
+        
+      },
+  };;
+
+  document.getElementById("sendMeal").addEventListener("click", function() {
+    const selectedDay = document.getElementById("day").value;
+    const selectedMealType = document.getElementById("meal").value;
+    const meal = getMeal(selectedDay, selectedMealType);
+    document.getElementById("result").textContent = `For ${selectedDay}, ${selectedMealType} is ${meal}.`;
+  });
+ 
+ document.getElementById("sendShoppingList").addEventListener("click", function () {
+  displayShoppingList();
+  showList()
+});
+
+function getMeal(day, mealType) {
+  const selectedDay = timetable[day];
+  if (selectedDay && selectedDay[mealType]) {
+    return selectedDay[mealType];
+  } else {
+    return "No meal found for the given day and meal type.";
+  }
+}
+
+let listz = document.getElementById("shop-items")
+function showList(){
+  listz.style.display = "block";
+}
+
+function displayShoppingList() {
+  document.addEventListener('change', async (event) => {
+    if (event.target.classList.contains('myCheckbox')) {
+      const checkbox = event.target;
+      const checkboxId = checkbox.getAttribute('data-checkbox-id');
+      const checked = checkbox.checked;
+
+      let checkBoxItem = {
+        id: checkboxId,
+        completed: checked
+      };
+
+      try {
+        await db.collection('shoppinglist').doc(checkboxId).set(checkBoxItem);
+      } catch (error) {
+        console.error('Error updating checkbox state:', error);
+      }
+    }
+  });
+
+  async function displayItems() {
+   let task= await db.collection("shoppinglist").get()
+   task.forEach((doc) => {
+const item = doc.data()
+let checked = item.completed
+let checkboxId = item.id
+let checkbox = document.querySelector(`[data-checkbox-id="${checkboxId}"]`);
+console.log(checkbox)
+console.log(item)    
+console.log(checked)
+if (checkboxId = checkbox && checked){
+  checkbox.checked = true
+}
+   })
+  }
+displayItems()
+}
+
+let addTodo = document.getElementById("addtodo");
+let todoContainer = document.getElementById("todocontainer");
+let inputField = document.getElementById("input-field");
+
+addTodo.addEventListener("click", function () {
+  if (inputField.value.trim() === "") {
+    return;
+  }
+  let todo = {
+    text: inputField.value,
+    completed: false
+  };
+
+  db.collection("todos").add(todo)
+  .then(() => {
+    inputField.value = "";
+    displayTodos();
+  })
+  .catch((error) => {
+    console.error("Error adding todo:", error);
+  });
+
+  displayTodos();
+});
+
+async function displayTodos() {
+  todoContainer.innerHTML = "";
+  const todosCollection = db.collection('todos'); 
+      const querySnapshot = await todosCollection.get();
+      querySnapshot.forEach((doc) => {
+        const todo = doc.data();
+        const paragraph = document.createElement("p");
+        paragraph.classList.add("paragraph-styling");
+        paragraph.innerText = todo.text;
+
+        if (todo.completed) {
+          paragraph.style.textDecoration = "line-through";
+        }
+
+        const span = document.createElement("span");
+        span.innerHTML = "\u00d7";
+        paragraph.appendChild(span);
+
+        todoContainer.appendChild(paragraph);
+
+        paragraph.addEventListener("click", () => {
+          const newCompletedStatus = !todo.completed;
+          db.collection("todos").doc(doc.id).update({
+            completed: newCompletedStatus
+          })
+            .then(() => {
+              resetParagraphStyles();
+              displayTodos();
+            })
+            .catch((error) => {
+              console.error("Error updating todo:", error);
+            });
+        });
+
+        span.addEventListener("click", (event) => {
+          event.stopPropagation();
+          db.collection("todos").doc(doc.id).delete()
+            .then(() => {
+              resetParagraphStyles();
+              displayTodos();
+            })
+            .catch((error) => {
+              console.error("Error deleting todo:", error);
+            });
+        });
+      });
+}
+displayTodos()
+function resetParagraphStyles() {
+  const paragraphs = todoContainer.querySelectorAll(".paragraph-styling");
+  paragraphs.forEach(paragraph => {
+    paragraph.style.textDecoration = "none";
+  });
+}}
+</script>
+  <footer class="footer">Your experience matters</footer>
+  <!--<script type="module" src="./node/test.js"></script>-->
+</body>
+</html>
